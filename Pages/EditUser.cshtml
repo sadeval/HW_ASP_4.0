@@ -1,0 +1,76 @@
+﻿@page "{id:int}"
+@using HW_ASP_4._0
+@inject IUserRepository UserRepository
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit User</title>
+</head>
+<body>
+    <h1>Edit User</h1>
+    @if (TempData["Error"] != null)
+    {
+        <p style="color:red;">@TempData["Error"]</p>
+    }
+    <form method="post">
+        <label>Name:</label>
+        <input type="text" name="Name" value="@Name" required />
+        <br />
+        <label>Email:</label>
+        <input type="email" name="Email" value="@Email" required />
+        <br />
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="/">Back to list</a>
+</body>
+</html>
+
+@functions {
+    public string Name { get; set; }
+    public string Email { get; set; }
+
+    public IActionResult OnGet(int id)
+    {
+        var user = UserRepository.GetById(id);
+        if (user != null)
+        {
+            Name = user.Name;
+            Email = user.Email;
+            return Page();
+        }
+        else
+        {
+            TempData["Error"] = $"User with ID {id} not found.";
+            return RedirectToPage("/Index");
+        }
+    }
+
+    public IActionResult OnPost(int id)
+    {
+        try
+        {
+            var user = UserRepository.GetById(id);
+            if (user != null)
+            {
+                Name = Request.Form["Name"];
+                Email = Request.Form["Email"];
+
+                user.Name = Name;
+                user.Email = Email;
+                UserRepository.Update(user);
+                return RedirectToPage("/Index");
+            }
+            else
+            {
+                TempData["Error"] = $"User with ID {id} not found.";
+                return Page();
+            }
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = ex.Message;
+            return Page();
+        }
+    }
+}

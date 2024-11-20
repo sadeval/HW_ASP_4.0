@@ -1,0 +1,38 @@
+﻿@page
+@using HW_ASP_4._0
+@inject IUserRepository UserRepository
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users</title>
+</head>
+<body>
+    <h1>Users</h1>
+    <a asp-page="/AddUser">Add New User</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in UserRepository.GetAll())
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>
+                        <a asp-page="/EditUser" asp-route-id="@user.Id">Edit</a> |
+                        <a asp-page="/DeleteUser" asp-route-id="@user.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

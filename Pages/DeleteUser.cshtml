@@ -1,0 +1,34 @@
+﻿@page "{id:int}"
+@using HW_ASP_4._0
+@inject IUserRepository UserRepository
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete User</title>
+</head>
+<body>
+    <h1>Delete User</h1>
+    <p>Are you sure you want to delete this user?</p>
+    <form method="post">
+        <button type="submit">Yes, Delete</button>
+        <a href="/">Cancel</a>
+    </form>
+</body>
+</html>
+
+@functions {
+    public void OnPost(int id)
+    {
+        try
+        {
+            UserRepository.Remove(id);
+            Response.Redirect("/");
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = ex.Message;
+            Response.Redirect("/");
+        }
+    }
+}
